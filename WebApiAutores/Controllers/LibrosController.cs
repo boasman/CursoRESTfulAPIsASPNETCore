@@ -23,7 +23,7 @@ namespace WebApiAutores.Controllers
         public async Task<ActionResult<List<Libro>>> Get()
         {
             return await context.Libros.ToListAsync();
-            
+
         }
 
         [HttpGet("{id:int}")]
@@ -34,22 +34,29 @@ namespace WebApiAutores.Controllers
             {
                 return NotFound();
             }
-            return await context.Libros.FirstOrDefaultAsync(x=>x.Id == id);
+            return await context.Libros.Include(x=>x.Autor).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         [HttpPost]
-
         public async Task<ActionResult> Post(Libro libro)
         {
+
+            var existeAutor = await context.Autores.AnyAsync(x => x.Id == libro.AutorId);
+
+            if (!existeAutor)
+            {
+                return BadRequest($"No existe el autor del Id: {libro.AutorId}");
+            }
             context.Add(libro);
             await context.SaveChangesAsync();
             return Ok();
         }
 
-        [HttpPut("{int:id}")]
+        [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(Libro libro, int id)
         {
-            if(libro.Id != id)
+
+            if (libro.Id != id)
             {
                 return BadRequest("El id del libro no coincide con el id de la url");
             }

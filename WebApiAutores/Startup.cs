@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace WebApiAutores
 {
@@ -14,7 +15,11 @@ namespace WebApiAutores
         {
             // Add services to the container.
 
-            services.AddControllers();
+            //services.AddControllers();
+
+            //esto es para resolver el cyclo infinito 
+            services.AddControllers().AddJsonOptions(x=>
+            x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
             services.AddDbContext<ApplicationDbContext>(opciones =>
             opciones.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
