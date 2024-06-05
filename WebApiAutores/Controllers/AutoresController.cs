@@ -7,6 +7,7 @@ namespace WebApiAutores.Controllers
 {
     [ApiController]
     [Route("api/autores")]
+    //[Route("api/[controller]")]  //placeholder
     public class AutoresController : ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -16,10 +17,20 @@ namespace WebApiAutores.Controllers
             this.context = context;
         }
 
-        [HttpGet]
+        [HttpGet] //api/autores
+        [HttpGet("listado")] //api/autores//listado
+        [HttpGet("/listado")] //listado sobreescribiendo la ruta del controlador
         public async Task<ActionResult<List<Autor>>> Get()
         {
             return await context.Autores.Include(x=>x.Libros).ToListAsync();
+        }
+
+        [HttpGet("Primero")] //api/autores/primero contatena  la ruta del controladores con la del endpoint
+        [HttpGet("PrimeroAutor")] //api/autores/primero contatena  la ruta del controladores con la del endpoint
+        public async Task<ActionResult<Autor>> PrimerAutor()
+        {
+
+            return await context.Autores.FirstOrDefaultAsync();
         }
 
         [HttpPost]
@@ -46,7 +57,7 @@ namespace WebApiAutores.Controllers
                 return NotFound();
             }
 
-            context.Update(autor);
+            context.Update(autor);            
             await context.SaveChangesAsync();
             return Ok();
         }

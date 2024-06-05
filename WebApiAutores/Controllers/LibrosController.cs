@@ -9,7 +9,7 @@ namespace WebApiAutores.Controllers
 {
 
     [ApiController]
-    [Route("api/libros")]
+    [Route("api/libros")] //api/autores => ruta de este controlador
     public class LibrosController : ControllerBase
     {
         private readonly ApplicationDbContext context;
